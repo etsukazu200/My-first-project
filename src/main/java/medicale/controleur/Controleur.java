@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import medicale.models.Patients;
 import medicale.models.Rendezvous;
+import medicale.models.Visites;
 import medicale.repository.PatientRepo;
 import medicale.repository.RendezvousRepo;
+import medicale.repository.VisiteRepo;
 
 @CrossOrigin // anotation de sécurité permet la connexion à partir de la méme machine qui héberge l'application
 @RestController
@@ -26,7 +29,8 @@ public class Controleur {
 	private PatientRepo pat;
 	@Autowired
 	private RendezvousRepo visite;
-	 
+	@Autowired
+	private VisiteRepo visi;
 	 
 	
 	@RequestMapping("/patient")
@@ -46,6 +50,18 @@ public class Controleur {
        
    } 
 	
+	@RequestMapping("/visites")
+	 public List<Visites> afficherr() {
+		
+      return   visi.findAll();
+      
+  } 
+	@RequestMapping("/visite/{numcarte}")
+	 public Visites afficheParnum(@PathVariable("numcarte") String numcarte) {
+		
+      return   visi.getVisiteParnumero(numcarte);
+      
+  } 
 	@RequestMapping("/rendezvousParnum/{numcarte}")
 	public Rendezvous afficherParnum(@PathVariable("numcarte") String numcarte) {
 		     Rendezvous vit=visite.getrendezvousParnumero(numcarte);
@@ -87,7 +103,21 @@ public class Controleur {
 			System.out.println("l'insertion de  "+dateheure+" "+motif+" "+" "+patientnom+" "+numcarte );
 		return rendez;
 		}
-	
+		@RequestMapping("/inserVisite/{nompatient}/{prenompatient}/{typevisite}/{numcarte}/{motif}/{datevisite}}/{remarque")
+	   public Visites ajouterVisite(@PathVariable("nompatient") String nompatient,@PathVariable("prenompatient") String prenompatient,@PathVariable("typevisite") String typevisite,@PathVariable("numcarte") String numcarte,@PathVariable("motif") String motif,@PathVariable("datevisite") Timestamp datevisite,@PathVariable("remarque") String  remarque) {
+			Visites v=new Visites();
+			v.setPrenompatient(prenompatient);
+			
+			v.setNompatient(nompatient);
+			v.setTypevisite(typevisite);
+			v.setNumcarte(numcarte);
+			v.setMotif(motif);
+			v.setRemarque(remarque);
+			v.setDatevisite(datevisite);
+			v=visi.save(v);
+			System.out.println("l'insertion de  "+datevisite+" "+motif+" "+" "+nompatient+" "+numcarte+" "+typevisite );
+			return v;
+		}
 		@RequestMapping("/updatePatienttParnum/{id}/{nom}")
 		public void updatePatientparnum(@PathVariable("id") int id,@PathVariable("nom") String nom) {
 			

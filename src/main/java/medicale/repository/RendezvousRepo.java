@@ -31,7 +31,6 @@ public interface RendezvousRepo  extends JpaRepository<Rendezvous, Integer >{
 	public void inserRendezvous(@Param(value="dateheure") Timestamp dateheure,@Param(value="motif") String motif,@Param(value="nompatient") String nompatient,@Param(value="numcarte") String numcarte);
 	
 	@Modifying
-	//@Query("drop table Rendzvous r")
 	@Query(" delete  from Rendezvous r ")
 	@Transactional
 	public void deletAll();
